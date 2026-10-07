@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flappy Jev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jersey+20&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --surround: #1c3138;
+    --sky: #71c5cf;
+    --plum: #543847;
+    --ink: #3b2832;
+    --ink-soft: #6a4f45;
+    --board: #e9dba0;
+    --board-lo: #d3c27a;
+    --board-hi: #f6edc4;
+    --well: #f8f1cf;
+    --green: #73bf2e;
+    --green-lo: #4f7d1c;
+    --orange: #e86a17;
+    --orange-hi: #f7a43c;
+    --orange-lo: #a8440a;
+    --white: #fffdf2;
+    /* Jersey 20 is drawn on a 20 px grid: it is only ever set at 20, 40, 60 or 80 px. */
+    --pixel: 'Jersey 20', ui-monospace, 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100dvh;
+    background: var(--surround);
+    color: var(--ink);
+    font: 400 20px/1.2 var(--pixel);
+    font-synthesis: none;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+  }
+  h1, h2, h3, p, dl, dd, ol { margin: 0; font-weight: 400; }
+  .stage { display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; justify-content: center; max-width: 100%; }
+
+  /* ---- Playfield ---- */
+  .field {
+    position: relative;
+    width: var(--field-w, 368px);
+    height: var(--field-h, 648px);
+    flex: none;
+    align-self: flex-start;
+    border: 4px solid var(--plum);
+    background: var(--sky);
+    overflow: hidden;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+  /* White pixel type with a thin plum outline and a one-step drop, as on the arcade original. */
+  .score, .is-title h1, .is-title .hint {
+    color: var(--white);
+    -webkit-text-stroke: 0.1em var(--plum);
+    paint-order: stroke fill;
+    filter: drop-shadow(0 0.05em 0 var(--plum));
+  }
+  .score {
+    position: absolute; inset: 5% 0 auto 0;
+    text-align: center;
+    font-size: var(--score-size, 80px);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .score.pop { animation: pop 180ms cubic-bezier(0.2, 0.9, 0.3, 1); }
+  @keyframes pop { from { transform: translateY(-6px) scale(1.12); } }
+
+  .curtain { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+  .curtain h1 { line-height: 1; text-wrap: balance; }
+  .curtain .row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-items: center; }
+  .curtain code { font: inherit; background: var(--well); padding: 0 4px; overflow-wrap: anywhere; }
+  .curtain[hidden], .curtain [hidden], .score[hidden] { display: none; }
+  /* Title screen: lettering straight on the sky. */
+  .is-title { inset: 0; padding: 36% 7% 0; }
+  .is-title h1 { font-size: var(--head-size, 60px); }
+  .is-title .hint { -webkit-text-stroke-width: 0.15em; letter-spacing: 0.04em; }
+  .is-title .note {
+    max-width: 30ch; padding: 10px 12px;
+    background: var(--board); border: 4px solid var(--plum);
+    box-shadow: inset 0 4px 0 var(--board-hi), inset 0 -4px 0 var(--board-lo);
+    text-wrap: pretty;
+  }
+  /* Paused and crashed: one tan card, placed clear of the bird. */
+  .is-card {
+    left: 6%; right: 6%; max-height: 86%; overflow: auto;
+    padding: 18px 14px 20px;
+    background: var(--board); border: 4px solid var(--plum);
+    box-shadow: inset 0 4px 0 var(--board-hi), inset 0 -4px 0 var(--board-lo);
+    animation: rise 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .is-card.at-top { top: 2%; }
+  .is-card.at-bottom { bottom: 2%; }
+  .is-card h1 { font-size: 40px; }
+  .is-card .note, .is-card .hint, .is-card .learned { text-wrap: pretty; }
+  .is-card .hint, .is-card .learned { color: var(--ink-soft); }
+  .is-card .stats { align-self: stretch; margin: 0 8%; text-align: left; }
+  @keyframes rise { from { transform: translateY(20px); opacity: 0; } }
+
+  /* ---- Buttons ---- */
+  button {
+    font: 400 40px/1 var(--pixel);
+    color: var(--white);
+    background: var(--orange);
+    border: 4px solid var(--plum);
+    padding: 8px 20px 12px;
+    box-shadow: inset 0 4px 0 var(--orange-hi), inset 0 -4px 0 var(--orange-lo), 0 4px 0 var(--plum);
+    cursor: pointer;
+    transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+  }
+  button:hover { background: #f07a25; }
+  button:active { transform: translateY(4px); box-shadow: inset 0 4px 0 var(--orange-hi), inset 0 -4px 0 var(--orange-lo), 0 0 0 var(--plum); }
+  button:focus-visible { outline: 4px solid var(--ink); outline-offset: 4px; }
+  button:disabled {
+    background: var(--board-lo); color: var(--ink-soft); cursor: not-allowed;
+    box-shadow: inset 0 4px 0 var(--board), inset 0 -4px 0 #b8a660, 0 4px 0 var(--plum);
+  }
+  button.quiet {
+    font-size: 20px; padding: 8px 12px 10px;
+    background: var(--board); color: var(--ink);
+    box-shadow: inset 0 4px 0 var(--board-hi), inset 0 -4px 0 var(--board-lo), 0 4px 0 var(--plum);
+  }
+  button.quiet:hover { background: var(--board-hi); }
+  button[hidden] { display: none; }
+
+  /* ---- The two boards: Jev's live answer, and what it has learned ---- */
+  .board {
+    width: 300px;
+    min-height: var(--field-h, 0);
+    flex: none;
+    display: flex; flex-direction: column;
+    background: var(--board);
+    border: 4px solid var(--plum);
+    box-shadow: inset 0 4px 0 var(--board-hi), inset 0 -4px 0 var(--board-lo);
+    padding: 18px 16px 20px;
+  }
+  .board h2 { font-size: 40px; line-height: 1; margin-bottom: 4px; }
+  .board h3 { font-size: 20px; color: var(--ink-soft); margin: 18px 0 6px; }
+  .well { padding: 8px 10px; background: var(--well); border: 4px solid var(--plum); list-style: none; }
+  /* Each thing Jev is told keeps a two-line slot, so the board does not jump while you read it. */
+  .told { display: grid; grid-template-columns: auto 1fr; gap: 0 10px; }
+  .told dt { color: var(--ink-soft); }
+  .told dd { min-height: 48px; }
+  .meter { position: relative; height: 28px; background: var(--well); border: 4px solid var(--plum); }
+  .meter i { display: block; height: 100%; width: 0; background: var(--ink-soft); }
+  .meter.flap i { background: var(--green); box-shadow: inset 0 -4px 0 var(--green-lo); }
+  .meter::after { /* the flap line at 50% */
+    content: ''; position: absolute; top: -8px; bottom: -8px; left: 50%; width: 4px; margin-left: -2px;
+    background: var(--plum);
+  }
+  .verdict { display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; }
+  .verdict b { font-weight: 400; font-size: 40px; line-height: 1; margin-right: 8px; }
+  .verdict small { font-size: 20px; color: var(--ink-soft); }
+  .stats { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin-top: 18px; }
+  .stats dt { color: var(--ink-soft); }
+  .stats dd { text-align: right; }
+  .stats dd.slow { color: var(--orange-lo); }
+  .board .foot { margin-top: auto; padding-top: 18px; min-height: 70px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .seed { color: var(--ink-soft); margin-left: auto; }
+  #memory { height: var(--field-h, auto); }
+  #notes { flex: 1 1 96px; min-height: 96px; overflow-y: auto; scrollbar-color: var(--plum) var(--board-lo); }
+  #notes:focus-visible { outline: 4px solid var(--ink); outline-offset: 4px; }
+  #notes::-webkit-scrollbar { width: 12px; }
+  #notes::-webkit-scrollbar-track { background: var(--board-lo); }
+  #notes::-webkit-scrollbar-thumb { background: var(--plum); }
+  #more { color: var(--ink-soft); margin-top: 6px; }
+  #more[hidden] { display: none; }
+  #notes li + li { margin-top: 10px; padding-top: 10px; border-top: 4px solid var(--board-lo); }
+  .empty { color: var(--ink-soft); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* Three across: Jev's answer, the game, the crash notes. */
+  @media (min-width: 1060px) {
+    .field { order: 2; }
+    #memory { order: 3; }
+  }
+  @media (max-width: 1059px) {
+    #memory { width: calc(var(--field-w, 368px) + 324px); height: auto; min-height: 0; }
+    #notes { flex: none; max-height: 300px; }
+  }
+  @media (max-width: 720px) {
+    body { place-items: start center; }
+    .stage { flex-direction: column; align-items: center; gap: 16px; }
+    .field { align-self: center; }
+    .board, #memory { width: max(var(--field-w, 368px), 288px); min-height: 0; }
+    /* On a phone the answer comes first, so it is in view under the game. */
+    .board:not(#memory) h2 { display: none; }
+    .answer { order: -1; }
+    .answer h3 { margin-top: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    button { transition: none; }
+    .is-card, .score.pop { animation: none; }
+  }
+</style>
+</head>
+<body>
+<!--
+THESIS: Classic arcade Flappy, played straight, with one thing the arcade never had: you can read the pilot's mind. Refuses the dark AI-dashboard look.
+OWN-WORLD: Sky blue with stepped clouds and skyline, green pipes with plum outlines, striped ground, tan scoreboards with a plum border, orange slab buttons, chunky pixel type (Jersey 20): white with a plum outline on the playfield, plain ink on the boards.
+STORY: Press Let Jev fly, watch the bird, and read each answer on the board: what Jev was told, how sure it was, how long it took, and what its crashes have taught it.
+FIRST VIEWPORT: Portrait playfield at full height in the middle, title and Let Jev fly on it; a tan board on each side (below it on phones): Jev's live answer on the left, its crash notes on the right.
+FORM: The category canon, chosen by the user over the rolled direction; seed e0bbf95d.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
+<main class="stage">
+  <div class="field" id="field">
+    <canvas id="canvas" role="img" aria-label="Flappy Jev playfield"></canvas>
+    <p class="score" id="score" aria-hidden="true">0</p>
+    <div class="curtain is-title" id="curtain">
+      <h1 id="headline">Flappy Jev</h1>
+      <p class="note" id="note" hidden></p>
+      <dl class="stats" id="tally" hidden>
+        <dt>Score</dt><dd id="tallyScore">0</dd>
+        <dt>Best</dt><dd id="tallyBest">0</dd>
+      </dl>
+      <p class="learned" id="learned" hidden></p>
+      <div class="row">
+        <button id="primary" disabled>Let Jev fly</button>
+        <button id="secondary" class="quiet" hidden>Stop</button>
+      </div>
+      <p class="hint" id="hint">Space or tap to fly it yourself</p>
+    </div>
+  </div>
+
+  <aside class="board" aria-label="Jev's answers">
+    <h2>Jev</h2>
+    <section class="answer">
+      <h3>Jev's answer to "flap now?"</h3>
+      <div class="meter" id="meter" role="meter" aria-label="Jev's probability for flap" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+      <p class="verdict"><span><b id="pct">-</b><span id="word">no answer yet</span></span><small>flaps at 50%</small></p>
+    </section>
+    <section>
+      <h3>What Jev was told</h3>
+      <dl class="well told">
+        <dt>Height</dt><dd id="toldHeight" class="empty">nothing yet</dd>
+        <dt>Moving</dt><dd id="toldMoving" class="empty">nothing yet</dd>
+        <dt>Next pipe</dt><dd id="toldPipe" class="empty">nothing yet</dd>
+      </dl>
+    </section>
+    <dl class="stats">
+      <dt>Score</dt><dd id="liveScore">-</dd>
+      <dt>Answer time</dt><dd id="ms">-</dd>
+      <dt>Game speed</dt><dd id="speed">-</dd>
+      <dt>Answers known</dt><dd id="answers">-</dd>
+    </dl>
+    <div class="foot">
+      <button id="stop" class="quiet" hidden>Stop Jev</button>
+      <p class="seed" id="seed"></p>
+    </div>
+  </aside>
+
+  <aside class="board" id="memory" aria-label="What Jev has learned">
+    <h2>Crash notes</h2>
+    <h3>Sent to Jev with every question</h3>
+    <ol class="well" id="notes" tabindex="0" aria-label="Crash notes, newest first"></ol>
+    <p id="more" hidden></p>
+    <h3>Pipes passed on each of Jev's runs</h3>
+    <p id="runs" class="empty">no runs yet</p>
+    <dl class="stats">
+      <dt>Best, Jev</dt><dd id="bestJev">-</dd>
+      <dt>Best, you</dt><dd id="bestYou">-</dd>
+    </dl>
+    <div class="foot"><button id="forget" class="quiet" hidden>Forget everything</button></div>
+  </aside>
+</main>
+<p class="sr" id="status" role="status"></p>
+
+<script type="module">
+import {
+  WORLD_W, WORLD_H, GROUND_Y, BIRD_X, PIPE_W, GAP_H, PIPE_SPEED,
+  SUBSTEP_MS, DECISION_STEP_MS, FLAP_THRESHOLD, JEV_TIMEOUT_MS, JEV_PARALLEL, JEV_RETRY_MS,
+} from './constants.js';
+import { createGame, advance } from './game.js';
+import { describe, whatItHit, crashNote, addNote, areNotes, HEIGHT, MOVEMENT, DISTANCE } from './pilot.js';
+
+const $ = (id) => document.getElementById(id);
+const field = $('field'), canvas = $('canvas'), ctx = canvas.getContext('2d');
+const el = Object.fromEntries([
+  'score', 'curtain', 'headline', 'note', 'tally', 'tallyScore', 'tallyBest', 'learned', 'primary', 'secondary', 'hint',
+  'meter', 'pct', 'word', 'toldHeight', 'toldMoving', 'toldPipe', 'liveScore', 'ms', 'speed', 'answers', 'stop', 'seed',
+  'notes', 'more', 'runs', 'bestJev', 'bestYou', 'forget', 'status',
+].map((id) => [id, $(id)]));
+
+const fixedSeed = Number(new URLSearchParams(location.search).get('seed')) || null;
+const newSeed = () => fixedSeed ?? (Math.random() * 2 ** 32) >>> 0;
+const STEPS = DECISION_STEP_MS / SUBSTEP_MS;
+const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// mode: idle | jev | manual | paused | over.   who: who flew the current run.
+let mode = 'idle', who = null, hasKey = false;
+let seed = newSeed(), sim = createGame(seed);
+let run = 0; // bumped whenever a run starts or stops, so a late answer from an old run is dropped
+let log = [], lastError = null, bestYou = null;
+// Jev mode shows each 100 ms step as it is decided: `from` is the game before the step.
+let play = null; // { from, flap, start, dur, done, finish }
+let pace = DECISION_STEP_MS; // real ms spent showing one step; grows when Jev is slow
+let lag = 0; // smoothed time Jev takes to answer, as the page sees it
+let pendingFlap = false, clock = 0, lastFrame = 0, overAt = 0, shownScore = 0, flashUntil = 0;
+
+// What Jev has learned lives in this browser: its crash notes and the score of each run.
+const store = {
+  read(key, ok, fallback) {
+    try { const v = JSON.parse(localStorage.getItem(key)); return ok(v) ? v : fallback; } catch { return fallback; }
+  },
+  write(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} },
+};
+let notes = store.read('flappy-jev.notes', areNotes, []);
+let runs = store.read('flappy-jev.runs', (v) => Array.isArray(v) && v.every((n) => Number.isInteger(n) && n >= 0), []);
+
+const ERRORS = {
+  no_key: ['Jev needs an API key', 'Put it in the <code>.env</code> file as <code>TYPESAFE_API_KEY</code>, then restart the server.'],
+  bad_key: ['TypeSafe rejected the key', 'Check <code>TYPESAFE_API_KEY</code> in the <code>.env</code> file, then restart the server.'],
+  timeout: ['Jev is not answering', `It took longer than ${JEV_TIMEOUT_MS / 1000} seconds. The game is paused and nothing was lost.`],
+  busy: ['TypeSafe is busy', 'It is rate-limiting or overloaded right now. Wait a moment, then try again.'],
+  unreachable: ['No connection to TypeSafe', 'Check the internet connection, then try again.'],
+  server_down: ['The game server stopped', 'Start it again with <code>npm start</code>, then try again.'],
+  jev_error: ['TypeSafe sent an error', 'It returned an error instead of an answer. Try again in a moment.'],
+  bad_answer: ['Jev sent a bad answer', 'The reply was not a usable answer. Try again in a moment.'],
+  bad_request: ['The server refused the question', 'Reload the page. If it keeps happening, use Forget everything.'],
+};
+
+// ---------------------------------------------------------------- art
+// Authored at a 2 px grid in the 360 x 640 world, drawn with flat fills.
+const C = {
+  plum: '#543847', sky: '#71c5cf', cloud: '#e4f6f1', city: '#aedfcd', bush: '#7dcf6b',
+  pipe: '#73bf2e', pipeHi: '#a6ea63', pipeLo: '#4f7d1c',
+  grass: '#9de24a', grassStripe: '#73bf2e', grassEdge: '#4f7d1c', sand: '#ded895', sandLine: '#cdbf73',
+};
+const BIRD = [
+  '.....KKKKKK.....',
+  '...KKYYYYYYKK...',
+  '..KYYYYYYYWWWK..',
+  '.KYYYYYYYWWWBWK.',
+  'KKYYYYYYYWWWBWK.',
+  'KYYYYYYYYYWWWKK.',
+  'KYYYYYYYYYKKKOOK',
+  'KYYYYYYYYSKOOOOK',
+  '.KYYYYYSSSSKOOK.',
+  '..KSSSSSSSSKKK..',
+  '...KKSSSSSKK....',
+  '.....KKKKK......',
+];
+const WINGS = [ // up, level, down: [first row, rows]
+  [3, ['.KKKK.', 'KLLLLK', 'KLLLK.', '.KKK..']],
+  [5, ['KKKKK.', 'KLLLLK', '.KKKK.']],
+  [6, ['.KKK..', 'KLLLK.', 'KLLLLK', '.KKKK.']],
+];
+const INK = { K: C.plum, Y: '#f9d43a', S: '#e59a25', W: '#fffdf2', B: '#241a1f', O: '#f0642b', L: '#fdf0a8' };
+
+function stamp(g, rows, col, row) {
+  rows.forEach((line, y) => [...line].forEach((ch, x) => {
+    if (ch === '.') return;
+    g.fillStyle = INK[ch];
+    g.fillRect((col + x) * 2, (row + y) * 2, 2, 2);
+  }));
+}
+const birdFrames = WINGS.map(([row, wing]) => {
+  const c = new OffscreenCanvas(32, 24), g = c.getContext('2d');
+  stamp(g, BIRD, 0, 0);
+  stamp(g, wing, 1, row);
+  return c;
+});
+
+// A stepped half-disc: the building block for clouds and bushes.
+function bump(g, cx, base, r) {
+  for (let dy = 0; dy < r; dy += 2) {
+    const half = Math.round(Math.sqrt(r * r - dy * dy) / 2) * 2;
+    g.fillRect(cx - half, base - dy - 2, half * 2, 2);
+  }
+}
+const backdrop = new OffscreenCanvas(WORLD_W, WORLD_H);
+{
+  const g = backdrop.getContext('2d');
+  g.fillStyle = C.sky; g.fillRect(0, 0, WORLD_W, WORLD_H);
+  g.fillStyle = C.cloud;
+  [[20, 26], [62, 34], [110, 22], [150, 30], [196, 36], [244, 24], [286, 32], [334, 26], [370, 30]]
+    .forEach(([x, r]) => bump(g, x, 486, r));
+  g.fillRect(0, 486, WORLD_W, 80);
+  g.fillStyle = C.city;
+  [[6, 22, 34], [30, 16, 52], [48, 26, 28], [78, 18, 46], [98, 30, 36], [132, 14, 58], [148, 24, 30],
+   [176, 20, 48], [198, 28, 26], [230, 16, 54], [248, 26, 38], [278, 18, 30], [298, 24, 50], [326, 28, 34]]
+    .forEach(([x, w, h]) => g.fillRect(x, 520 - h, w, h + 40));
+  g.fillStyle = C.bush;
+  [[12, 18], [44, 22], [82, 16], [116, 22], [154, 18], [190, 24], [228, 16], [262, 22], [300, 18], [336, 24], [366, 16]]
+    .forEach(([x, r]) => bump(g, x, 544, r));
+  g.fillRect(0, 544, WORLD_W, 20);
+}
+
+function drawPipe(x, gapY) {
+  const top = gapY - GAP_H / 2, bottom = gapY + GAP_H / 2, cap = 26, lip = 4;
+  const part = (px, py, w, h) => {
+    ctx.fillStyle = C.plum; ctx.fillRect(px, py, w, h);
+    ctx.fillStyle = C.pipe; ctx.fillRect(px + 2, py + 2, w - 4, h - 4);
+    ctx.fillStyle = C.pipeHi; ctx.fillRect(px + 6, py + 2, 6, h - 4);
+    ctx.fillStyle = C.pipeLo; ctx.fillRect(px + w - 12, py + 2, 10, h - 4);
+  };
+  part(x, -4, PIPE_W, top - cap + 6);
+  part(x - lip, top - cap, PIPE_W + lip * 2, cap);
+  part(x, bottom + cap - 2, PIPE_W, GROUND_Y - bottom - cap + 4);
+  part(x - lip, bottom, PIPE_W + lip * 2, cap);
+}
+
+function drawGround(t) {
+  const shift = Math.floor((((t / 1000) * PIPE_SPEED) % 24) / 2) * 2;
+  ctx.fillStyle = C.sand; ctx.fillRect(0, GROUND_Y, WORLD_W, WORLD_H - GROUND_Y);
+  ctx.fillStyle = C.grass; ctx.fillRect(0, GROUND_Y + 2, WORLD_W, 14);
+  ctx.fillStyle = C.grassStripe; // slanted stripes, stepped 2 px per row like the rest of the art
+  for (let x = -24 - shift; x < WORLD_W + 24; x += 24) {
+    for (let row = 0; row < 7; row++) ctx.fillRect(x + 12 - row * 2, GROUND_Y + 2 + row * 2, 12, 2);
+  }
+  ctx.fillStyle = C.plum; ctx.fillRect(0, GROUND_Y, WORLD_W, 2);
+  ctx.fillStyle = C.grassEdge; ctx.fillRect(0, GROUND_Y + 16, WORLD_W, 2);
+  ctx.fillStyle = C.sandLine; ctx.fillRect(0, GROUND_Y + 20, WORLD_W, 2);
+}
+
+function drawBird(x, y, tilt, wing, scale) {
+  ctx.save();
+  ctx.translate(x, Math.round(y));
+  ctx.rotate(tilt);
+  ctx.scale(scale, scale);
+  ctx.drawImage(birdFrames[wing], -16, -12);
+  ctx.restore();
+}
+
+function draw(view, now) {
+  ctx.setTransform(canvas.width / WORLD_W, 0, 0, canvas.width / WORLD_W, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(backdrop, 0, 0);
+  for (const p of view.pipes) drawPipe(Math.round(p.x), p.gapY);
+  const beat = Math.floor(now / 90) % 3; // wing beat
+  if (mode === 'idle') {
+    drawGround(calm ? 0 : now);
+    drawBird(WORLD_W / 2, 84 + (calm ? 0 : Math.sin(now / 260) * 6), 0, calm ? 1 : beat, 2); // title-screen mascot
+    return;
+  }
+  const { vy } = view.bird;
+  drawGround(view.t);
+  // Drawn one and a half times its hitbox, the way the arcade bird is; nose up
+  // while rising, diving when falling; wings beat only on the way up.
+  drawBird(BIRD_X, view.bird.y, Math.max(-0.42, Math.min(1.2, (vy / 480) * 1.05)), !view.alive || vy > 240 ? 0 : vy < -120 ? beat : 1, 1.5);
+  if (now < flashUntil && !calm) { // the arcade's white flash on a crash
+    ctx.fillStyle = `rgba(255, 253, 242, ${((flashUntil - now) / 160) * 0.8})`;
+    ctx.fillRect(0, 0, WORLD_W, WORLD_H);
+  }
+}
+
+// ---------------------------------------------------------------- sizing
+// The backing store is a multiple of half a world pixel where it can be, so
+// the 2 px art lands on whole device pixels. Type sizes snap to the face's 20 px grid.
+function resize() {
+  const dpr = devicePixelRatio || 1;
+  const beside = innerWidth <= 720 ? 0 : innerWidth < 1060 ? 324 : 648; // boards beside the field: none, one, or one each side
+  const availW = innerWidth - 32 - beside, availH = innerWidth <= 720 ? innerHeight - 290 : innerHeight - 32;
+  const fit = (Math.max(200, Math.min(availW - 8, ((availH - 8) * 9) / 16, 540)) * dpr) / WORLD_W;
+  const snapped = Math.floor(fit * 2) / 2;
+  const k = snapped >= fit * 0.8 ? snapped : fit;
+  canvas.width = WORLD_W * k; canvas.height = WORLD_H * k;
+  const w = (WORLD_W * k) / dpr + 8, grid = (px) => `${Math.min(80, Math.max(40, Math.round(px / 20) * 20))}px`;
+  const stage = field.parentElement.style;
+  stage.setProperty('--field-w', `${w}px`);
+  stage.setProperty('--field-h', `${(WORLD_H * k) / dpr + 8}px`);
+  stage.setProperty('--score-size', grid(w * 0.2));
+  stage.setProperty('--head-size', grid(w * 0.16));
+}
+addEventListener('resize', resize);
+resize();
+
+// ---------------------------------------------------------------- the boards
+function showSituation(s) {
+  for (const [node, text] of [[el.toldHeight, s.bird_height], [el.toldMoving, s.bird_movement], [el.toldPipe, s.next_pipe]]) {
+    node.textContent = text;
+    node.className = '';
+  }
+}
+function showAnswer(p, took) {
+  const pct = Math.round(p * 100), flap = p >= FLAP_THRESHOLD, speed = DECISION_STEP_MS / pace;
+  el.meter.firstElementChild.style.width = `${pct}%`;
+  el.meter.classList.toggle('flap', flap);
+  el.meter.setAttribute('aria-valuenow', pct);
+  el.pct.textContent = `${pct}%`;
+  el.word.textContent = flap ? 'flap' : 'no flap';
+  el.ms.textContent = took;
+  el.speed.textContent = speed > 0.95 ? `${speed.toFixed(2)}x, normal` : `${speed.toFixed(2)}x of normal`;
+  el.speed.classList.toggle('slow', speed <= 0.95);
+}
+function clearBoard() {
+  for (const node of [el.toldHeight, el.toldMoving, el.toldPipe]) { node.textContent = 'nothing yet'; node.className = 'empty'; }
+  el.meter.firstElementChild.style.width = '0';
+  el.meter.classList.remove('flap');
+  el.meter.setAttribute('aria-valuenow', 0);
+  el.pct.textContent = '-';
+  el.word.textContent = 'no answer yet';
+  el.ms.textContent = el.speed.textContent = '-';
+  el.speed.classList.remove('slow');
+}
+// A crash note the way a person would say it. (Jev gets the server's own wording: see pilot.js.)
+const noteLine = (n) =>
+  `${n.choice === 'flap' ? 'Flapped' : 'Did not flap'} when ${n.bird_height}, ${n.bird_movement}. Hit the ${n.hit}${n.times > 1 ? `, ${n.times} times` : ''}.`;
+function showMemory() {
+  el.notes.innerHTML = notes.length ? '' : '<li class="empty">No crashes on record. Jev flies on the rules alone.</li>';
+  for (const n of notes) {
+    const li = document.createElement('li');
+    li.textContent = noteLine(n);
+    el.notes.append(li);
+  }
+  el.more.hidden = el.notes.scrollHeight <= el.notes.clientHeight + 1;
+  el.more.textContent = `${notes.length} notes, newest first. Scroll for the rest.`;
+  el.runs.textContent = runs.length ? runs.slice(-24).join(' · ') : 'no runs yet';
+  el.runs.className = runs.length ? '' : 'empty';
+  el.bestJev.textContent = runs.length ? Math.max(...runs) : '-';
+  el.bestYou.textContent = bestYou ?? '-';
+  el.forget.hidden = !notes.length && !runs.length;
+}
+
+// What the curtain over the playfield says. Title screen: lettering on the sky.
+// Paused and crashed: one tan card on whichever half the bird is not in.
+function curtain({ headline, note = '', tally = null, learned = '', primary, secondary = '', hint = '' }) {
+  const card = mode !== 'idle';
+  el.curtain.className = `curtain ${card ? `is-card ${sim.bird.y > WORLD_H / 2 ? 'at-top' : 'at-bottom'}` : 'is-title'}`;
+  el.curtain.hidden = false;
+  el.headline.textContent = headline;
+  el.note.hidden = !note; el.note.innerHTML = note;
+  el.tally.hidden = !tally;
+  if (tally) { el.tallyScore.textContent = tally.score; el.tallyBest.textContent = tally.best; }
+  el.learned.hidden = !learned; el.learned.textContent = learned;
+  el.primary.textContent = primary;
+  el.primary.disabled = !hasKey && mode !== 'paused';
+  el.secondary.hidden = !secondary; el.secondary.textContent = secondary;
+  el.hint.hidden = !hint; el.hint.textContent = hint;
+  el.status.textContent = [headline, el.note.textContent, tally ? `Score ${tally.score}, best ${tally.best}.` : '', learned].join(' ');
+}
+function setMode(next) {
+  mode = next;
+  document.body.dataset.mode = mode;
+  el.stop.hidden = mode !== 'jev';
+  el.score.hidden = mode === 'idle' || mode === 'over';
+  el.seed.textContent = `Seed ${seed}`;
+  if (mode === 'jev' || mode === 'manual') el.curtain.hidden = true;
+}
+
+function newGame(pilot) {
+  run++; who = pilot; play = null;
+  seed = newSeed(); sim = createGame(seed);
+  el.score.textContent = shownScore = 0;
+  el.liveScore.textContent = pilot ? '0' : '-';
+}
+
+function toIdle() {
+  newGame(null);
+  setMode('idle');
+  curtain({
+    headline: 'Flappy Jev',
+    note: hasKey ? '' : `${ERRORS.no_key[0]}. ${ERRORS.no_key[1]}`,
+    primary: 'Let Jev fly',
+    hint: 'Space or tap to fly it yourself',
+  });
+}
+
+function gameOver() {
+  const cause = sim.cause === 'ground' ? 'the ground' : 'a pipe';
+  let learned = '';
+  if (who === 'jev') {
+    // This is the learning: blame one decision, and send the note with every later question.
+    const note = crashNote(log, whatItHit(sim));
+    notes = addNote(notes, note);
+    runs = [...runs, sim.score].slice(-200);
+    store.write('flappy-jev.notes', notes);
+    store.write('flappy-jev.runs', runs);
+    if (note) learned = `Noted for next time: ${noteLine(notes[0])}`;
+    // A crash means the remembered answers were not good enough. Jev's answers
+    // wander a few points between askings, so every crash starts the memory
+    // over, even when the notes it sees read the same as before.
+    known = new Map(); knownFor = JSON.stringify(notes); showKnown();
+  } else {
+    bestYou = Math.max(bestYou ?? 0, sim.score);
+  }
+  showMemory();
+  overAt = performance.now();
+  setMode('over');
+  curtain({
+    headline: who === 'jev' ? `Jev hit ${cause}` : `You hit ${cause}`,
+    note: hasKey ? '' : `${ERRORS.no_key[0]}. ${ERRORS.no_key[1]}`,
+    tally: { score: sim.score, best: who === 'jev' ? Math.max(...runs) : bestYou },
+    learned,
+    primary: who === 'jev' ? 'Fly again' : 'Let Jev fly',
+    hint: 'Space or tap to fly it yourself',
+  });
+}
+
+// ---------------------------------------------------------------- Jev flies
+// Jev takes about a third of a second to answer from here, so its answers are
+// remembered: each situation is asked once for a given set of crash notes
+// (new notes can change the answers, so they start the memory over). At
+// take-off the situations not yet known are asked in the background, and a
+// few seconds into a run the bird never has to wait.
+const SITUATIONS = DISTANCE.flatMap((d) => HEIGHT.flatMap((h) => MOVEMENT.map((m) => ({ bird_height: h, bird_movement: m, next_pipe: d }))));
+const keyOf = (s) => `${s.bird_height}|${s.bird_movement}|${s.next_pipe}`;
+let known = new Map(), knownFor = '[]'; // situation -> { answer, promise }, for the notes in knownFor
+
+function memory() {
+  const stamp = JSON.stringify(notes);
+  if (stamp !== knownFor) { known = new Map(); knownFor = stamp; showKnown(); }
+  return known;
+}
+
+// One round trip to the server for situations not asked yet (up to JEV_PARALLEL of them).
+function askJev(situations) {
+  const mine = memory();
+  const reply = fetch('/api/decide', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ situations, notes }),
+  }).then(
+    async (res) => {
+      const body = await res.json().catch(() => ({ error: 'jev_error' }));
+      if (!res.ok) throw body;
+      return body.answers;
+    },
+    () => { throw { error: 'server_down' }; },
+  );
+  return situations.map((s, i) => {
+    const entry = { answer: null, promise: reply.then((answers) => { if (answers[i].error) throw answers[i]; return answers[i]; }) };
+    entry.promise.then(
+      (a) => { entry.answer = a; if (mine === known) showKnown(); },
+      () => { if (mine.get(keyOf(s)) === entry) mine.delete(keyOf(s)); }, // a failed question is asked again next time
+    );
+    mine.set(keyOf(s), entry);
+    return entry;
+  });
+}
+
+const ask = (situation) => memory().get(keyOf(situation)) ?? askJev([situation])[0];
+
+// Only ever one of these at a time, so Jev is never sent two batches at once.
+// Stops with the flight, and at the first failure (the bird's own question
+// will report it); after a failure it waits JEV_RETRY_MS before asking again.
+let warming = false, warmAfter = 0;
+async function warmUp() {
+  if (warming || performance.now() < warmAfter) return;
+  warming = true;
+  try {
+    while (mode === 'jev') {
+      const batch = SITUATIONS.filter((s) => !memory().has(keyOf(s))).slice(0, JEV_PARALLEL);
+      if (!batch.length) break;
+      await Promise.all(askJev(batch).map((entry) => entry.promise));
+    }
+  } catch {
+    warmAfter = performance.now() + JEV_RETRY_MS;
+  } finally {
+    warming = false;
+  }
+}
+
+function showKnown() {
+  let n = 0;
+  for (const entry of known.values()) if (entry.answer) n++;
+  el.answers.textContent = `${n} of ${SITUATIONS.length}`;
+}
+
+function showStep(from, flap, dur) {
+  let finish;
+  const done = new Promise((r) => (finish = r));
+  // Carry on from where the last step ended, so the wait for the next frame
+  // does not add up into slow motion. If the answer was late, the bird waited.
+  const now = performance.now(), prevEnd = play ? play.start + play.dur : now;
+  play = { from, flap, start: now - prevEnd < 40 ? prevEnd : now, dur, done, finish };
+}
+
+// The game only moves when Jev has answered: each answer buys one
+// DECISION_STEP_MS of game time. Slow answers stretch `pace`, so the game
+// runs in slow motion instead of leaving the bird to fall while it waits.
+async function jevLoop() {
+  const mine = run;
+  while (sim.alive) {
+    const situation = describe(sim);
+    const asked = performance.now(), noted = notes.length;
+    const entry = ask(situation), remembered = Boolean(entry.answer);
+    let answer, roundTrip;
+    try {
+      [answer] = await Promise.all([
+        entry.promise.then((a) => { roundTrip = performance.now() - asked; return a; }),
+        play?.done,
+      ]);
+    } catch (err) {
+      if (mine !== run) return;
+      lastError = ERRORS[err.error] ? err.error : 'jev_error';
+      setMode('paused');
+      curtain({ headline: ERRORS[lastError][0], note: ERRORS[lastError][1], primary: 'Try again', secondary: 'Stop' });
+      return;
+    }
+    if (mine !== run) return;
+    warmUp(); // no-op while one is running or just failed; picks up again after new notes
+    lag = lag ? lag * 0.7 + roundTrip * 0.3 : roundTrip;
+    pace = Math.max(DECISION_STEP_MS, lag * 1.1); // a little headroom so answers land before the step ends
+    const flap = answer.p >= FLAP_THRESHOLD;
+    log.push({ t: sim.t, y: sim.bird.y, vy: sim.bird.vy, ...situation, p: answer.p, flap, notes: noted, remembered, jevMs: answer.ms, roundTripMs: Math.round(roundTrip), model: answer.model });
+    showSituation(situation);
+    showAnswer(answer.p, remembered ? 'remembered' : `${answer.ms} ms`);
+    const from = structuredClone(sim);
+    advance(sim, DECISION_STEP_MS, flap);
+    showStep(from, flap, pace);
+  }
+  await play.done;
+  if (mine === run) gameOver();
+}
+
+function startJev() {
+  if (mode === 'jev') return;
+  if (mode === 'over' && performance.now() - overAt < 500) return; // a reflex tap as the card appears
+  if (mode !== 'paused') {
+    if (!hasKey) return;
+    newGame('jev');
+    pace = DECISION_STEP_MS; lag = 0; log = []; lastError = null;
+    clearBoard();
+  }
+  warmAfter = 0; // a new run or Try again may ask straight away
+  setMode('jev');
+  jevLoop();
+  warmUp();
+}
+
+// ---------------------------------------------------------------- you fly
+function flapByHand() {
+  if (mode === 'jev' || mode === 'paused') return;
+  if (mode === 'over' && performance.now() - overAt < 500) return;
+  if (mode !== 'manual') {
+    newGame('you');
+    clock = 0;
+    setMode('manual');
+  }
+  pendingFlap = true;
+}
+
+// ---------------------------------------------------------------- frame
+function frame(now) {
+  const elapsed = Math.min(now - lastFrame, 100);
+  lastFrame = now;
+  let view = sim;
+
+  if (mode === 'manual') {
+    clock += elapsed;
+    while (clock >= SUBSTEP_MS && sim.alive) {
+      advance(sim, SUBSTEP_MS, pendingFlap);
+      pendingFlap = false;
+      clock -= SUBSTEP_MS;
+    }
+    if (!sim.alive) { flashUntil = now + 160; gameOver(); }
+  } else if (play) {
+    const f = Math.min(1, (now - play.start) / play.dur);
+    view = advance(structuredClone(play.from), Math.floor(f * STEPS) * SUBSTEP_MS, play.flap);
+    if (f >= 1) {
+      if (!view.alive && mode === 'jev') flashUntil = now + 160;
+      play.finish();
+    }
+  }
+
+  if (view.score !== shownScore) {
+    el.score.textContent = el.liveScore.textContent = shownScore = view.score;
+    el.score.classList.remove('pop');
+    void el.score.offsetWidth; // restart the pop
+    el.score.classList.add('pop');
+  }
+  draw(view, now);
+  requestAnimationFrame(frame);
+}
+
+// ---------------------------------------------------------------- controls
+el.primary.addEventListener('click', startJev);
+el.secondary.addEventListener('click', toIdle);
+el.stop.addEventListener('click', toIdle);
+el.forget.addEventListener('click', () => {
+  notes = []; runs = [];
+  store.write('flappy-jev.notes', notes);
+  store.write('flappy-jev.runs', runs);
+  showMemory();
+  if (mode === 'jev') warmUp(); // the answers were for the old notes
+});
+canvas.addEventListener('pointerdown', flapByHand);
+el.curtain.addEventListener('pointerdown', (e) => { if (!e.target.closest('button')) flapByHand(); });
+addEventListener('keydown', (e) => {
+  if (e.code !== 'Space' && e.code !== 'ArrowUp') return;
+  if (e.target.closest?.('button, #notes')) return; // Space presses the focused button; arrows scroll the notes
+  e.preventDefault();
+  if (!e.repeat) flapByHand();
+});
+
+// For the automated run and for poking at a run from the console.
+window.flappy = {
+  get mode() { return mode; }, get who() { return who; }, get seed() { return seed; },
+  get score() { return sim.score; }, get alive() { return sim.alive; }, get cause() { return sim.cause; },
+  get birdY() { return sim.bird.y; }, get log() { return log; }, get lastError() { return lastError; },
+  get pace() { return pace; }, get notes() { return notes; }, get runs() { return runs; },
+  get known() { let n = 0; for (const e of known.values()) if (e.answer) n++; return n; },
+  get best() { return { jev: runs.length ? Math.max(...runs) : null, you: bestYou }; },
+};
+
+showMemory();
+showKnown();
+toIdle();
+requestAnimationFrame(frame);
+fetch('/api/status').then((r) => r.json()).then((s) => { hasKey = s.hasKey; }).catch(() => {}).finally(() => { if (mode === 'idle') toIdle(); });
+</script>
+</body>
+</html>

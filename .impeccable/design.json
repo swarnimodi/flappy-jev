@@ -1,0 +1,651 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-06T14:30:00.000Z",
+  "title": "Design System: Flappy Jev",
+  "extensions": {
+    "colorMeta": {
+      "orange": {
+        "role": "primary",
+        "displayName": "Slab Orange",
+        "canonical": "#e86a17",
+        "tonalRamp": [
+          "oklch(15% 0.140 47)",
+          "oklch(27% 0.177 47)",
+          "oklch(39% 0.177 47)",
+          "oklch(51% 0.177 47)",
+          "oklch(63% 0.177 47)",
+          "oklch(75% 0.177 47)",
+          "oklch(86% 0.132 47)",
+          "oklch(95% 0.060 47)"
+        ]
+      },
+      "orange-hi": {
+        "role": "primary",
+        "displayName": "Slab Orange, light step",
+        "canonical": "#f7a43c",
+        "tonalRamp": [
+          "oklch(15% 0.140 68)",
+          "oklch(27% 0.150 68)",
+          "oklch(39% 0.150 68)",
+          "oklch(51% 0.150 68)",
+          "oklch(63% 0.150 68)",
+          "oklch(75% 0.150 68)",
+          "oklch(86% 0.132 68)",
+          "oklch(95% 0.060 68)"
+        ]
+      },
+      "orange-lo": {
+        "role": "primary",
+        "displayName": "Slab Orange, dark step",
+        "canonical": "#a8440a",
+        "tonalRamp": [
+          "oklch(15% 0.140 44)",
+          "oklch(27% 0.145 44)",
+          "oklch(39% 0.145 44)",
+          "oklch(51% 0.145 44)",
+          "oklch(63% 0.145 44)",
+          "oklch(75% 0.145 44)",
+          "oklch(86% 0.132 44)",
+          "oklch(95% 0.060 44)"
+        ]
+      },
+      "green": {
+        "role": "secondary",
+        "displayName": "Pipe Green",
+        "canonical": "#73bf2e",
+        "tonalRamp": [
+          "oklch(15% 0.140 134)",
+          "oklch(27% 0.189 134)",
+          "oklch(39% 0.189 134)",
+          "oklch(51% 0.189 134)",
+          "oklch(63% 0.189 134)",
+          "oklch(75% 0.189 134)",
+          "oklch(86% 0.132 134)",
+          "oklch(95% 0.060 134)"
+        ]
+      },
+      "green-lo": {
+        "role": "secondary",
+        "displayName": "Pipe Green, shade",
+        "canonical": "#4f7d1c",
+        "tonalRamp": [
+          "oklch(15% 0.134 132)",
+          "oklch(27% 0.134 132)",
+          "oklch(39% 0.134 132)",
+          "oklch(51% 0.134 132)",
+          "oklch(63% 0.134 132)",
+          "oklch(75% 0.134 132)",
+          "oklch(86% 0.132 132)",
+          "oklch(95% 0.060 132)"
+        ]
+      },
+      "pipe-hi": {
+        "role": "secondary",
+        "displayName": "Pipe Highlight",
+        "canonical": "#a6ea63",
+        "tonalRamp": [
+          "oklch(15% 0.140 132)",
+          "oklch(27% 0.180 132)",
+          "oklch(39% 0.180 132)",
+          "oklch(51% 0.180 132)",
+          "oklch(63% 0.180 132)",
+          "oklch(75% 0.180 132)",
+          "oklch(86% 0.132 132)",
+          "oklch(95% 0.060 132)"
+        ]
+      },
+      "grass": {
+        "role": "secondary",
+        "displayName": "Grass",
+        "canonical": "#9de24a",
+        "tonalRamp": [
+          "oklch(15% 0.140 131)",
+          "oklch(27% 0.193 131)",
+          "oklch(39% 0.193 131)",
+          "oklch(51% 0.193 131)",
+          "oklch(63% 0.193 131)",
+          "oklch(75% 0.193 131)",
+          "oklch(86% 0.132 131)",
+          "oklch(95% 0.060 131)"
+        ]
+      },
+      "bush": {
+        "role": "secondary",
+        "displayName": "Bush Green",
+        "canonical": "#7dcf6b",
+        "tonalRamp": [
+          "oklch(15% 0.140 140)",
+          "oklch(27% 0.157 140)",
+          "oklch(39% 0.157 140)",
+          "oklch(51% 0.157 140)",
+          "oklch(63% 0.157 140)",
+          "oklch(75% 0.157 140)",
+          "oklch(86% 0.132 140)",
+          "oklch(95% 0.060 140)"
+        ]
+      },
+      "sky": {
+        "role": "tertiary",
+        "displayName": "Arcade Sky",
+        "canonical": "#71c5cf",
+        "tonalRamp": [
+          "oklch(15% 0.083 205)",
+          "oklch(27% 0.083 205)",
+          "oklch(39% 0.083 205)",
+          "oklch(51% 0.083 205)",
+          "oklch(63% 0.083 205)",
+          "oklch(75% 0.083 205)",
+          "oklch(86% 0.083 205)",
+          "oklch(95% 0.060 205)"
+        ]
+      },
+      "cloud": {
+        "role": "tertiary",
+        "displayName": "Cloud",
+        "canonical": "#e4f6f1",
+        "tonalRamp": [
+          "oklch(15% 0.020 177)",
+          "oklch(27% 0.020 177)",
+          "oklch(39% 0.020 177)",
+          "oklch(51% 0.020 177)",
+          "oklch(63% 0.020 177)",
+          "oklch(75% 0.020 177)",
+          "oklch(86% 0.020 177)",
+          "oklch(95% 0.020 177)"
+        ]
+      },
+      "city": {
+        "role": "tertiary",
+        "displayName": "Far City",
+        "canonical": "#aedfcd",
+        "tonalRamp": [
+          "oklch(15% 0.057 170)",
+          "oklch(27% 0.057 170)",
+          "oklch(39% 0.057 170)",
+          "oklch(51% 0.057 170)",
+          "oklch(63% 0.057 170)",
+          "oklch(75% 0.057 170)",
+          "oklch(86% 0.057 170)",
+          "oklch(95% 0.057 170)"
+        ]
+      },
+      "sand": {
+        "role": "tertiary",
+        "displayName": "Ground Sand",
+        "canonical": "#ded895",
+        "tonalRamp": [
+          "oklch(15% 0.086 104)",
+          "oklch(27% 0.086 104)",
+          "oklch(39% 0.086 104)",
+          "oklch(51% 0.086 104)",
+          "oklch(63% 0.086 104)",
+          "oklch(75% 0.086 104)",
+          "oklch(86% 0.086 104)",
+          "oklch(95% 0.060 104)"
+        ]
+      },
+      "sand-line": {
+        "role": "tertiary",
+        "displayName": "Sand Line",
+        "canonical": "#cdbf73",
+        "tonalRamp": [
+          "oklch(15% 0.098 99)",
+          "oklch(27% 0.098 99)",
+          "oklch(39% 0.098 99)",
+          "oklch(51% 0.098 99)",
+          "oklch(63% 0.098 99)",
+          "oklch(75% 0.098 99)",
+          "oklch(86% 0.098 99)",
+          "oklch(95% 0.060 99)"
+        ]
+      },
+      "bird-yellow": {
+        "role": "tertiary",
+        "displayName": "Bird Yellow",
+        "canonical": "#f9d43a",
+        "tonalRamp": [
+          "oklch(15% 0.140 95)",
+          "oklch(27% 0.164 95)",
+          "oklch(39% 0.164 95)",
+          "oklch(51% 0.164 95)",
+          "oklch(63% 0.164 95)",
+          "oklch(75% 0.164 95)",
+          "oklch(86% 0.132 95)",
+          "oklch(95% 0.060 95)"
+        ]
+      },
+      "bird-shade": {
+        "role": "tertiary",
+        "displayName": "Bird Shade",
+        "canonical": "#e59a25",
+        "tonalRamp": [
+          "oklch(15% 0.140 72)",
+          "oklch(27% 0.149 72)",
+          "oklch(39% 0.149 72)",
+          "oklch(51% 0.149 72)",
+          "oklch(63% 0.149 72)",
+          "oklch(75% 0.149 72)",
+          "oklch(86% 0.132 72)",
+          "oklch(95% 0.060 72)"
+        ]
+      },
+      "bird-wing": {
+        "role": "tertiary",
+        "displayName": "Bird Wing",
+        "canonical": "#fdf0a8",
+        "tonalRamp": [
+          "oklch(15% 0.092 99)",
+          "oklch(27% 0.092 99)",
+          "oklch(39% 0.092 99)",
+          "oklch(51% 0.092 99)",
+          "oklch(63% 0.092 99)",
+          "oklch(75% 0.092 99)",
+          "oklch(86% 0.092 99)",
+          "oklch(95% 0.060 99)"
+        ]
+      },
+      "bird-beak": {
+        "role": "tertiary",
+        "displayName": "Bird Beak",
+        "canonical": "#f0642b",
+        "tonalRamp": [
+          "oklch(15% 0.140 40)",
+          "oklch(27% 0.186 40)",
+          "oklch(39% 0.186 40)",
+          "oklch(51% 0.186 40)",
+          "oklch(63% 0.186 40)",
+          "oklch(75% 0.186 40)",
+          "oklch(86% 0.132 40)",
+          "oklch(95% 0.060 40)"
+        ]
+      },
+      "bird-eye": {
+        "role": "tertiary",
+        "displayName": "Bird Eye",
+        "canonical": "#241a1f",
+        "tonalRamp": [
+          "oklch(15% 0.018 347)",
+          "oklch(27% 0.018 347)",
+          "oklch(39% 0.018 347)",
+          "oklch(51% 0.018 347)",
+          "oklch(63% 0.018 347)",
+          "oklch(75% 0.018 347)",
+          "oklch(86% 0.018 347)",
+          "oklch(95% 0.018 347)"
+        ]
+      },
+      "plum": {
+        "role": "neutral",
+        "displayName": "Plum Outline",
+        "canonical": "#543847",
+        "tonalRamp": [
+          "oklch(15% 0.046 346)",
+          "oklch(27% 0.046 346)",
+          "oklch(39% 0.046 346)",
+          "oklch(51% 0.046 346)",
+          "oklch(63% 0.046 346)",
+          "oklch(75% 0.046 346)",
+          "oklch(86% 0.046 346)",
+          "oklch(95% 0.046 346)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#3b2832",
+        "tonalRamp": [
+          "oklch(15% 0.033 346)",
+          "oklch(27% 0.033 346)",
+          "oklch(39% 0.033 346)",
+          "oklch(51% 0.033 346)",
+          "oklch(63% 0.033 346)",
+          "oklch(75% 0.033 346)",
+          "oklch(86% 0.033 346)",
+          "oklch(95% 0.033 346)"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#6a4f45",
+        "tonalRamp": [
+          "oklch(15% 0.040 41)",
+          "oklch(27% 0.040 41)",
+          "oklch(39% 0.040 41)",
+          "oklch(51% 0.040 41)",
+          "oklch(63% 0.040 41)",
+          "oklch(75% 0.040 41)",
+          "oklch(86% 0.040 41)",
+          "oklch(95% 0.040 41)"
+        ]
+      },
+      "board": {
+        "role": "neutral",
+        "displayName": "Board Tan",
+        "canonical": "#e9dba0",
+        "tonalRamp": [
+          "oklch(15% 0.078 96)",
+          "oklch(27% 0.078 96)",
+          "oklch(39% 0.078 96)",
+          "oklch(51% 0.078 96)",
+          "oklch(63% 0.078 96)",
+          "oklch(75% 0.078 96)",
+          "oklch(86% 0.078 96)",
+          "oklch(95% 0.060 96)"
+        ]
+      },
+      "board-hi": {
+        "role": "neutral",
+        "displayName": "Board Tan, light step",
+        "canonical": "#f6edc4",
+        "tonalRamp": [
+          "oklch(15% 0.054 97)",
+          "oklch(27% 0.054 97)",
+          "oklch(39% 0.054 97)",
+          "oklch(51% 0.054 97)",
+          "oklch(63% 0.054 97)",
+          "oklch(75% 0.054 97)",
+          "oklch(86% 0.054 97)",
+          "oklch(95% 0.054 97)"
+        ]
+      },
+      "board-lo": {
+        "role": "neutral",
+        "displayName": "Board Tan, dark step",
+        "canonical": "#d3c27a",
+        "tonalRamp": [
+          "oklch(15% 0.094 96)",
+          "oklch(27% 0.094 96)",
+          "oklch(39% 0.094 96)",
+          "oklch(51% 0.094 96)",
+          "oklch(63% 0.094 96)",
+          "oklch(75% 0.094 96)",
+          "oklch(86% 0.094 96)",
+          "oklch(95% 0.060 96)"
+        ]
+      },
+      "well": {
+        "role": "neutral",
+        "displayName": "Well Cream",
+        "canonical": "#f8f1cf",
+        "tonalRamp": [
+          "oklch(15% 0.045 98)",
+          "oklch(27% 0.045 98)",
+          "oklch(39% 0.045 98)",
+          "oklch(51% 0.045 98)",
+          "oklch(63% 0.045 98)",
+          "oklch(75% 0.045 98)",
+          "oklch(86% 0.045 98)",
+          "oklch(95% 0.045 98)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Score White",
+        "canonical": "#fffdf2",
+        "tonalRamp": [
+          "oklch(15% 0.015 98)",
+          "oklch(27% 0.015 98)",
+          "oklch(39% 0.015 98)",
+          "oklch(51% 0.015 98)",
+          "oklch(63% 0.015 98)",
+          "oklch(75% 0.015 98)",
+          "oklch(86% 0.015 98)",
+          "oklch(95% 0.015 98)"
+        ]
+      },
+      "surround": {
+        "role": "neutral",
+        "displayName": "Surround Teal",
+        "canonical": "#1c3138",
+        "tonalRamp": [
+          "oklch(15% 0.030 221)",
+          "oklch(27% 0.030 221)",
+          "oklch(39% 0.030 221)",
+          "oklch(51% 0.030 221)",
+          "oklch(63% 0.030 221)",
+          "oklch(75% 0.030 221)",
+          "oklch(86% 0.030 221)",
+          "oklch(95% 0.030 221)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The live score on the playfield. Fluid, snapped to the 20 px grid, 40 px minimum."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Title lettering on the sky. Fluid, snapped to the 20 px grid, 40 px minimum."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Board headings, card headline, primary button label, the verdict percentage."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All other text. Labels are body type in soft ink."
+      }
+    },
+    "shadows": [
+      {
+        "name": "board-bevel",
+        "value": "inset 0 4px 0 #f6edc4, inset 0 -4px 0 #d3c27a",
+        "purpose": "Stepped bevel on boards, the crash and pause card, the title-screen note."
+      },
+      {
+        "name": "button-primary",
+        "value": "inset 0 4px 0 #f7a43c, inset 0 -4px 0 #a8440a, 0 4px 0 #543847",
+        "purpose": "Primary button bevel plus the 4px plum base that collapses on press."
+      },
+      {
+        "name": "button-quiet",
+        "value": "inset 0 4px 0 #f6edc4, inset 0 -4px 0 #d3c27a, 0 4px 0 #543847",
+        "purpose": "Quiet button bevel plus the 4px plum base."
+      },
+      {
+        "name": "meter-shade",
+        "value": "inset 0 -4px 0 #4f7d1c",
+        "purpose": "Bottom step on the green meter fill."
+      },
+      {
+        "name": "sky-type-drop",
+        "value": "drop-shadow(0 0.05em 0 #543847)",
+        "purpose": "One-step hard drop under white outlined type on the playfield (a filter, paired with a 0.1em plum text stroke)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "button-press",
+        "value": "transform, box-shadow 80ms ease-out",
+        "purpose": "Button moves down 4px and its base collapses on :active."
+      },
+      {
+        "name": "score-pop",
+        "value": "180ms cubic-bezier(0.2, 0.9, 0.3, 1), from translateY(-6px) scale(1.12)",
+        "purpose": "The score settles on each point."
+      },
+      {
+        "name": "card-rise",
+        "value": "220ms cubic-bezier(0.2, 0.8, 0.2, 1), from translateY(20px) opacity 0",
+        "purpose": "The paused or crashed card arrives."
+      },
+      {
+        "name": "crash-flash",
+        "value": "160ms linear fade from 0.8 alpha white",
+        "purpose": "White wash over the canvas on a crash."
+      },
+      {
+        "name": "wing-beat",
+        "value": "3 frames, 90ms each",
+        "purpose": "Bird wing cycle; in flight it beats only while rising."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Removes the press transition, score pop, card rise, crash flash, title bob and idle wing beat."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "boards-wrap",
+        "value": "1059px"
+      },
+      {
+        "name": "single-column",
+        "value": "720px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one orange action on screen: Let Jev fly, Fly again, Try again.",
+      "html": "<button class=\"ds-btn\">Let Jev fly</button>",
+      "css": ".ds-btn { font-family: 'Jersey 20', ui-monospace, 'Courier New', monospace; font-weight: 400; font-size: 40px; line-height: 1; color: #fffdf2; background: #e86a17; border: 4px solid #543847; border-radius: 0; padding: 8px 20px 12px; box-shadow: inset 0 4px 0 #f7a43c, inset 0 -4px 0 #a8440a, 0 4px 0 #543847; cursor: pointer; transition: transform 80ms ease-out, box-shadow 80ms ease-out; } .ds-btn:hover { background: #f07a25; } .ds-btn:active { transform: translateY(4px); box-shadow: inset 0 4px 0 #f7a43c, inset 0 -4px 0 #a8440a, 0 0 0 #543847; } .ds-btn:focus-visible { outline: 4px solid #3b2832; outline-offset: 4px; } .ds-btn:disabled { background: #d3c27a; color: #6a4f45; cursor: not-allowed; box-shadow: inset 0 4px 0 #e9dba0, inset 0 -4px 0 #b8a660, 0 4px 0 #543847; } @media (prefers-reduced-motion: reduce) { .ds-btn { transition: none; } }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "The lesser action on a board or card: Stop, Stop Jev, Forget everything.",
+      "html": "<button class=\"ds-btn-quiet\">Stop Jev</button>",
+      "css": ".ds-btn-quiet { font-family: 'Jersey 20', ui-monospace, 'Courier New', monospace; font-weight: 400; font-size: 20px; line-height: 1; color: #3b2832; background: #e9dba0; border: 4px solid #543847; border-radius: 0; padding: 8px 12px 10px; box-shadow: inset 0 4px 0 #f6edc4, inset 0 -4px 0 #d3c27a, 0 4px 0 #543847; cursor: pointer; transition: transform 80ms ease-out, box-shadow 80ms ease-out; } .ds-btn-quiet:hover { background: #f6edc4; } .ds-btn-quiet:active { transform: translateY(4px); box-shadow: inset 0 4px 0 #f6edc4, inset 0 -4px 0 #d3c27a, 0 0 0 #543847; } .ds-btn-quiet:focus-visible { outline: 4px solid #3b2832; outline-offset: 4px; } @media (prefers-reduced-motion: reduce) { .ds-btn-quiet { transition: none; } }"
+    },
+    {
+      "name": "Board",
+      "kind": "card",
+      "refersTo": "board",
+      "description": "Tan reading surface beside the playfield: a 40px heading, then sections opened by a soft-ink label.",
+      "html": "<aside class=\"ds-board\"><h2 class=\"ds-board-h\">Crash notes</h2><h3 class=\"ds-board-label\">Sent to Jev with every question</h3><p style=\"margin:0;color:#6a4f45\">no runs yet</p></aside>",
+      "css": ".ds-board { font-family: 'Jersey 20', ui-monospace, 'Courier New', monospace; font-weight: 400; font-size: 20px; line-height: 1.2; color: #3b2832; width: 300px; background: #e9dba0; border: 4px solid #543847; box-shadow: inset 0 4px 0 #f6edc4, inset 0 -4px 0 #d3c27a; padding: 18px 16px 20px; } .ds-board-h { font-size: 40px; line-height: 1; margin: 0 0 4px; font-weight: 400; } .ds-board-label { font-size: 20px; color: #6a4f45; margin: 18px 0 6px; font-weight: 400; } "
+    },
+    {
+      "name": "Well",
+      "kind": "custom",
+      "refersTo": "well",
+      "description": "Recessed cream panel inside a board; each row keeps a two-line slot so the board does not jump.",
+      "html": "<dl class=\"ds-well\"><dt>Height</dt><dd>inside the gap, near its top edge</dd><dt>Moving</dt><dd>rising fast</dd></dl>",
+      "css": ".ds-well { font-family: 'Jersey 20', ui-monospace, 'Courier New', monospace; font-weight: 400; font-size: 20px; line-height: 1.2; color: #3b2832; margin: 0; padding: 8px 10px; background: #f8f1cf; border: 4px solid #543847; display: grid; grid-template-columns: auto 1fr; gap: 0 10px; width: 260px; } .ds-well dt { color: #6a4f45; } .ds-well dd { margin: 0; min-height: 48px; }"
+    },
+    {
+      "name": "Stats List",
+      "kind": "custom",
+      "refersTo": "board",
+      "description": "Label in soft ink, value right-aligned in ink; a slow game speed turns dark orange.",
+      "html": "<dl class=\"ds-stats\"><dt>Score</dt><dd>1</dd><dt>Answer time</dt><dd>remembered</dd><dt>Game speed</dt><dd class=\"ds-slow\">0.62x of normal</dd></dl>",
+      "css": ".ds-stats { font-family: 'Jersey 20', ui-monospace, 'Courier New', monospace; font-weight: 400; font-size: 20px; line-height: 1.2; color: #3b2832; margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; width: 260px; } .ds-stats dt { color: #6a4f45; } .ds-stats dd { margin: 0; text-align: right; } .ds-stats dd.ds-slow { color: #a8440a; }"
+    },
+    {
+      "name": "Probability Meter",
+      "kind": "custom",
+      "refersTo": "meter",
+      "description": "Jev's probability for flap: soft-ink fill below the 50% flap line, green at or over it.",
+      "html": "<div class=\"ds-meter-wrap\"><div class=\"ds-meter ds-flap\"><i style=\"width:72%\"></i></div><p class=\"ds-verdict\"><span><b>72%</b>flap</span><small>flaps at 50%</small></p></div>",
+      "css": ".ds-meter-wrap { font-family: 'Jersey 20', ui-monospace, 'Courier New', monospace; font-weight: 400; font-size: 20px; line-height: 1.2; color: #3b2832; width: 260px; padding: 8px 0; } .ds-meter { position: relative; height: 28px; background: #f8f1cf; border: 4px solid #543847; } .ds-meter i { display: block; height: 100%; background: #6a4f45; } .ds-meter.ds-flap i { background: #73bf2e; box-shadow: inset 0 -4px 0 #4f7d1c; } .ds-meter::after { content: ''; position: absolute; top: -8px; bottom: -8px; left: 50%; width: 4px; margin-left: -2px; background: #543847; } .ds-verdict { display: flex; justify-content: space-between; align-items: baseline; margin: 8px 0 0; } .ds-verdict b { font-weight: 400; font-size: 40px; line-height: 1; margin-right: 8px; } .ds-verdict small { font-size: 20px; color: #6a4f45; }"
+    },
+    {
+      "name": "Type On Sky",
+      "kind": "custom",
+      "refersTo": "playfield",
+      "description": "White pixel type with a plum outline and a one-step drop, only for lettering directly on the playfield.",
+      "html": "<div class=\"ds-sky\"><p class=\"ds-score\">12</p><p class=\"ds-head\">Flappy Jev</p></div>",
+      "css": ".ds-sky { font-family: 'Jersey 20', ui-monospace, 'Courier New', monospace; font-weight: 400; background: #71c5cf; border: 4px solid #543847; padding: 20px 28px; text-align: center; } .ds-sky p { margin: 0; color: #fffdf2; -webkit-text-stroke: 0.1em #543847; paint-order: stroke fill; filter: drop-shadow(0 0.05em 0 #543847); line-height: 1; } .ds-sky .ds-score { font-size: 80px; } .ds-sky .ds-head { font-size: 60px; }"
+    },
+    {
+      "name": "Crash Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The paused or crashed card over the playfield, placed on the half the bird is not in.",
+      "html": "<div class=\"ds-card\"><h1>Jev hit a pipe</h1><p>Space or tap to fly it yourself</p></div>",
+      "css": ".ds-card { font-family: 'Jersey 20', ui-monospace, 'Courier New', monospace; font-weight: 400; font-size: 20px; line-height: 1.2; color: #3b2832; width: 300px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 18px 14px 20px; background: #e9dba0; border: 4px solid #543847; box-shadow: inset 0 4px 0 #f6edc4, inset 0 -4px 0 #d3c27a; } .ds-card h1 { margin: 0; font-size: 40px; line-height: 1; font-weight: 400; } .ds-card p { margin: 0; color: #6a4f45; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Cabinet and the Clipboard",
+    "overview": "The world is the category canon, and it is the user's choice. Asked in a structured question over a rolled direction, Swarnim picked: \"Classic arcade look: blue sky, green pipes, a chunky bird, big score at the top. My own drawing in that style, not the original game's artwork.\" Everything here follows from that sentence. The playfield is an arcade cabinet in daylight: sky blue, green pipes, a striped ground, a yellow bird, a big white score. Nothing on it is a copy of the original sprites; every shape is drawn in code for this project.\n\nBeside the cabinet sit two tan boards, the same tan the arcade uses for its scoreboard. They are the clipboard: one shows the pilot's live answer (what it was told, how sure it was, how long it took), the other what its crashes have taught it. The boards borrow the cabinet's materials (plum outline, stepped bevel, pixel type) so the reading surface and the game read as one object. The page around them is a single dark teal surround that carries no content.\n\nThe system is flat, square and stepped. There is one typeface at one weight, one outline colour, no gradients, no blur and no rounded corners. The direction refuses the dark AI-dashboard look: the product is about a model's decisions, and it shows them on daylight tan in plain words, never on a dark panel of charts.",
+    "keyCharacteristics": [
+      "One typeface, Jersey 20, at one weight, set only on its 20 px grid.",
+      "Plum is the only outline colour: 4 px in the page, 2 px in the canvas art.",
+      "Flat fills everywhere; depth is a stepped bevel, never a blur or a gradient.",
+      "Square corners throughout; curves exist only as 2 px stair-steps in the art.",
+      "All art is drawn in code on a 2 px grid in a 360 x 640 world. No image files.",
+      "Daylight palette: sky, green and tan carry the surface; the dark surround is only the room."
+    ],
+    "rules": [
+      {
+        "name": "The Plum Line Rule",
+        "body": "Every outline in the system is `plum`. Black is not used for outlines, text or shadow anywhere.",
+        "section": "colors"
+      },
+      {
+        "name": "The Green Means Flap Rule",
+        "body": "In the page, green appears in exactly one place: the meter fill when the answer is at or over 50%. Below the line the fill is `ink-soft`. Green is never decoration on the boards.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Orange Rule",
+        "body": "Orange is the primary button. There is one primary button on screen at a time, and no other element takes the orange fill.",
+        "section": "colors"
+      },
+      {
+        "name": "The Daylight Rule",
+        "body": "Content sits on sky, tan or cream. `surround` is the room around the cabinet; nothing is ever set on it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Twenty Grid Rule",
+        "body": "Jersey 20 is set only at multiples of 20 px. Fixed sizes in the build are 20 and 40; the two fluid sizes snap with `round(px / 20) * 20` and never go below 40. A size between grid steps blurs the face and is a bug.",
+        "section": "typography"
+      },
+      {
+        "name": "The Outline On Sky Rule",
+        "body": "Type that sits directly on the playfield is `white` with a `plum` outline (0.1em stroke painted under the fill) and a one-step hard `plum` drop of 0.05em. Type on tan or cream is plain `ink` with no outline and no shadow.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Weight Rule",
+        "body": "Weight 400 only. Emphasis is a size step up the grid, never bold.",
+        "section": "typography"
+      },
+      {
+        "name": "The Stepped Bevel Rule",
+        "body": "Depth is a 4px light step and a 4px dark step, inset. Every shadow in the system has zero blur and zero horizontal offset.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Base Is For Pressing Rule",
+        "body": "Only something that can be pressed carries the outer 4px plum base. Boards, cards and wells never get an outer shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Drawn In Code Rule",
+        "body": "Art is this project's own drawing, made of rectangles on the 2 px grid. No image files, no sprites from the original game, no anti-aliased vector shapes.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do set Jersey 20 only at multiples of 20 px, at weight 400, with `font-synthesis: none`.",
+      "Do outline everything in `plum`: 4px solid in the page, 2 px in the canvas art.",
+      "Do show depth with the 4px stepped bevel (lighter step inside the top edge, darker step inside the bottom edge).",
+      "Do draw new art in code, with flat fills on the 2 px grid of the 360 x 640 world, and build curves from stair-steps.",
+      "Do put content on sky, tan or cream, and keep the tan boards the same materials as the arcade scoreboard.",
+      "Do keep white outlined type for lettering that sits directly on the playfield, and plain `ink` for type on tan.",
+      "Do reserve space for values that change length, so a board does not move while it is being read.",
+      "Do honour `prefers-reduced-motion` by removing the movement, as the build does."
+    ],
+    "donts": [
+      "Don't use the original game's artwork or trace it. The user chose their own drawing in that style.",
+      "Don't build a dark AI-dashboard: no dark panels, no content on `surround`, no glow.",
+      "Don't round a corner, blur a shadow or draw a gradient. All three are absent from the build.",
+      "Don't use orange for anything but the one primary button, or green in the page for anything but a \"flap\" answer.",
+      "Don't use pure black or pure white; the darks are warm plum-browns and the lightest tint is the warm `white`.",
+      "Don't add a second typeface or a bold weight.",
+      "Don't give a board, card or well an outer shadow; the plum base belongs to things that press.",
+      "Don't animate the probability meter between answers."
+    ]
+  }
+}
